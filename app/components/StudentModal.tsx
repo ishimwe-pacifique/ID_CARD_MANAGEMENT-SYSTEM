@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { X, UserPlus, Upload, Trash2, Camera, Check, Cloud, Loader2, CheckCircle2, Link as LinkIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Student, CLASS_OPTIONS } from '../types';
+import { Student, CLASS_OPTIONS, DISTRICTS_SECTORS } from '../types';
 import { generateInitials, generateStudentId } from '../utils';
 import { uploadPhotoToCloudinary } from '@/lib/api';
 
@@ -30,7 +30,8 @@ export function StudentModal({ isOpen, mode, student, onClose, onSave }: Student
   const [className, setClassName] = useState('S1');
   const [gender, setGender] = useState<'Male' | 'Female'>('Male');
   const [contact, setContact] = useState('');
-  const [residence, setResidence] = useState('');
+  const [district, setDistrict] = useState('Nyarugenge');
+  const [sector, setSector] = useState('Muhima');
   const [fatherName, setFatherName] = useState('');
   const [motherName, setMotherName] = useState('');
   const [dob, setDob] = useState('2008-01-01');
@@ -58,7 +59,10 @@ export function StudentModal({ isOpen, mode, student, onClose, onSave }: Student
         setClassName(student.className);
         setGender(student.gender);
         setContact(student.contact || '');
-        setResidence(student.residence || '');
+        // Parse existing residence "District - Sector" back into fields
+        const parts = (student.residence || '').split(' - ');
+        setDistrict(parts[0] || 'Nyarugenge');
+        setSector(parts[1] || 'Muhima');
         setFatherName(student.fatherName || '');
         setMotherName(student.motherName || '');
         setDob(student.dob || '2008-01-01');
@@ -71,7 +75,8 @@ export function StudentModal({ isOpen, mode, student, onClose, onSave }: Student
         setClassName('S1');
         setGender('Male');
         setContact('');
-        setResidence('Nyarugenge');
+        setDistrict('Nyarugenge');
+        setSector('Muhima');
         setFatherName('');
         setMotherName('');
         setDob('2009-01-01');
@@ -155,7 +160,7 @@ export function StudentModal({ isOpen, mode, student, onClose, onSave }: Student
       className: className.trim(),
       gender,
       contact: contact.trim(),
-      residence: residence.trim() || 'Kigali City',
+      residence: `${district} - ${sector}`,
       status,
       initials: generateInitials(name),
       photoUrl,
@@ -501,11 +506,12 @@ export function StudentModal({ isOpen, mode, student, onClose, onSave }: Student
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
             <div>
               <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 5 }}>
-                Class / Level *
+                Class / Trade *
               </label>
               <select
                 value={className}
                 onChange={(e) => setClassName(e.target.value)}
+                required
                 style={{
                   width: '100%',
                   height: 36,
@@ -517,12 +523,21 @@ export function StudentModal({ isOpen, mode, student, onClose, onSave }: Student
                   fontSize: 12,
                 }}
               >
-                {CLASS_OPTIONS.filter((c) => c !== 'All classes').map((cls) => (
-                  <option key={cls} value={cls}>
-                    {cls}
-                  </option>
-                ))}
-                <option value="L6">L6</option>
+                <optgroup label="Ordinary Level">
+                  <option value="S1">S1</option>
+                  <option value="S2">S2</option>
+                  <option value="S3">S3</option>
+                </optgroup>
+                <optgroup label="Technical — BDC">
+                  <option value="L3 BDC">L3 BDC</option>
+                  <option value="L4 BDC">L4 BDC</option>
+                  <option value="L5 BDC">L5 BDC</option>
+                </optgroup>
+                <optgroup label="Technical — FBO">
+                  <option value="L3 FBO">L3 FBO</option>
+                  <option value="L4 FBO">L4 FBO</option>
+                  <option value="L5 FBO">L5 FBO</option>
+                </optgroup>
               </select>
             </div>
 
@@ -598,25 +613,54 @@ export function StudentModal({ isOpen, mode, student, onClose, onSave }: Student
 
             <div>
               <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 5 }}>
-                Place of Residence
+                District
               </label>
-              <input
-                type="text"
-                value={residence}
-                onChange={(e) => setResidence(e.target.value)}
-                placeholder="e.g. Nyarugenge - Nyamirambo"
+              <select
+                value={district}
+                onChange={(e) => { setDistrict(e.target.value); setSector(DISTRICTS_SECTORS[e.target.value]?.[0] || ''); }}
                 style={{
                   width: '100%',
                   height: 36,
                   padding: '0 10px',
                   borderRadius: 6,
                   border: '1px solid var(--border)',
-                  background: 'transparent',
+                  background: 'var(--card)',
                   color: 'inherit',
                   fontSize: 12,
                 }}
-              />
+              >
+                {Object.keys(DISTRICTS_SECTORS).map((d) => (
+                  <option key={d} value={d}>{d}</option>
+                ))}
+              </select>
             </div>
+          </div>
+
+          <div>
+            <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 5 }}>
+              Sector
+            </label>
+            <select
+              value={sector}
+              onChange={(e) => setSector(e.target.value)}
+              style={{
+                width: '100%',
+                height: 36,
+                padding: '0 10px',
+                borderRadius: 6,
+                border: '1px solid var(--border)',
+                background: 'var(--card)',
+                color: 'inherit',
+                fontSize: 12,
+              }}
+            >
+              {(DISTRICTS_SECTORS[district] || []).map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+            <p style={{ fontSize: 10, color: 'var(--muted-foreground)', margin: '4px 0 0' }}>
+              Will appear on card as: <b>{district} - {sector}</b>
+            </p>
           </div>
 
           {/* Parents information */}
@@ -666,53 +710,25 @@ export function StudentModal({ isOpen, mode, student, onClose, onSave }: Student
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-            <div>
-              <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 5 }}>
-                Date of Birth
-              </label>
-              <input
-                type="date"
-                value={dob}
-                onChange={(e) => setDob(e.target.value)}
-                style={{
-                  width: '100%',
-                  height: 36,
-                  padding: '0 10px',
-                  borderRadius: 6,
-                  border: '1px solid var(--border)',
-                  background: 'transparent',
-                  color: 'inherit',
-                  fontSize: 12,
-                }}
-              />
-            </div>
-
-            <div>
-              <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 5 }}>
-                Blood Group
-              </label>
-              <select
-                value={bloodGroup}
-                onChange={(e) => setBloodGroup(e.target.value)}
-                style={{
-                  width: '100%',
-                  height: 36,
-                  padding: '0 10px',
-                  borderRadius: 6,
-                  border: '1px solid var(--border)',
-                  background: 'var(--card)',
-                  color: 'inherit',
-                  fontSize: 12,
-                }}
-              >
-                {['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-'].map((bg) => (
-                  <option key={bg} value={bg}>
-                    {bg}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div>
+            <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 5 }}>
+              Date of Birth
+            </label>
+            <input
+              type="date"
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
+              style={{
+                width: '100%',
+                height: 36,
+                padding: '0 10px',
+                borderRadius: 6,
+                border: '1px solid var(--border)',
+                background: 'transparent',
+                color: 'inherit',
+                fontSize: 12,
+              }}
+            />
           </div>
 
           <div

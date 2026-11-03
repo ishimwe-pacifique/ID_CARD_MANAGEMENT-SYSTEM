@@ -66,7 +66,7 @@ export interface ImportResult {
   errors: string[];
 }
 
-export type ClassFilter = 'All classes' | 'S1' | 'S2' | 'S3' | 'L3' | 'L4' | 'L5';
+export type ClassFilter = 'All classes' | 'S1' | 'S2' | 'S3' | 'L3 BDC' | 'L3 FBO' | 'L4 BDC' | 'L4 FBO' | 'L5 BDC' | 'L5 FBO';
 export type CardSide = 'front' | 'back';
 export type Theme = 'light' | 'dark';
 
@@ -81,12 +81,29 @@ export const CLASS_OPTIONS: ClassFilter[] = [
   'S1',
   'S2',
   'S3',
-  'L3',
-  'L4',
-  'L5',
+  'L3 BDC',
+  'L3 FBO',
+  'L4 BDC',
+  'L4 FBO',
+  'L5 BDC',
+  'L5 FBO',
 ];
 
 export const CLASS_TRACKS = {
   S: ['S1', 'S2', 'S3'],
-  L: ['L3', 'L4', 'L5'],
+  L_BDC: ['L3 BDC', 'L4 BDC', 'L5 BDC'],
+  L_FBO: ['L3 FBO', 'L4 FBO', 'L5 FBO'],
 } as const;
+
+export const DISTRICTS_SECTORS: Record<string, string[]> = {
+  'Nyarugenge': ['Gitega', 'Kanyinya', 'Kigali', 'Kimisagara', 'Mageragere', 'Muhima', 'Nyakabanda', 'Nyamirambo', 'Nyarugenge', 'Rwezamenyo'],
+  'Gasabo': ['Bumbogo', 'Gatsata', 'Gikomero', 'Gisozi', 'Jabana', 'Jali', 'Kacyiru', 'Kimihurura', 'Kimironko', 'Kinyinya', 'Ndera', 'Nduba', 'Remera', 'Rusororo', 'Rutunga'],
+  'Kicukiro': ['Gahanga', 'Gatenga', 'Gikondo', 'Kagarama', 'Kanombe', 'Kicukiro', 'Kigarama', 'Masaka', 'Niboye', 'Nyarugunga'],
+  'Bugesera': ['Gashora', 'Juru', 'Kamabuye', 'Mareba', 'Mayange', 'Musenyi', 'Mwogo', 'Ngeruka', 'Ntarama', 'Nyamata', 'Nyarugenge', 'Rilima', 'Ruhuha', 'Rweru', 'Shyara'],
+  'Gatsibo': ['Gasange', 'Gatsibo', 'Gitoki', 'Kabarore', 'Kageyo', 'Kiramuruzi', 'Kiziguro', 'Muhura', 'Murambi', 'Ngarama', 'Nyagihanga', 'Remera', 'Rugarama', 'Rwimbogo'],
+  'Huye': ['Gishamvu', 'Huye', 'Karama', 'Kigoma', 'Kinazi', 'Maraba', 'Mbazi', 'Mukura', 'Ngoma', 'Ruhashya', 'Rusatira', 'Rwaniro', 'Simbi', 'Tumba'],
+  'Musanze': ['Busogo', 'Cyuve', 'Gacaca', 'Gashaki', 'Gataraga', 'Kimonyi', 'Kinigi', 'Muhoza', 'Muko', 'Musanze', 'Nkotsi', 'Nyange', 'Remera', 'Rwaza', 'Shingiro'],
+  'Rubavu': ['Bugeshi', 'Busasamana', 'Cyanzarwe', 'Gisenyi', 'Kanama', 'Kanzenze', 'Mudende', 'Nyamyumba', 'Nyundo', 'Rubavu', 'Rugerero'],
+  'Muhanga': ['Cyeza', 'Kabacuzi', 'Kibangu', 'Kiyumba', 'Muhanga', 'Mushishiro', 'Nyabinoni', 'Nyamabuye', 'Nyamiyaga', 'Rongi', 'Rugendabari'],
+  'Rwamagana': ['Fumbwe', 'Gahengeri', 'Gishari', 'Karenge', 'Kigabiro', 'Muhazi', 'Munyaga', 'Munyiginya', 'Musha', 'Muyumbu', 'Mwulire', 'Nyakaliro', 'Nzige', 'Rubona'],
+};

@@ -5,7 +5,6 @@ import { Student, SchoolSettings, CLASS_OPTIONS } from '../types';
 import { Button } from '@/components/ui/button';
 import { Printer, Filter, Layers, CheckSquare, Square, Grid, Scissors } from 'lucide-react';
 import { QRCodeDisplay } from './QRCodeDisplay';
-import { BarcodeDisplay } from './BarcodeDisplay';
 import { FRONT_PHOTO_URL, getClassTrack } from '../utils';
 
 interface BulkPrintViewProps {
@@ -365,7 +364,7 @@ export function BulkPrintView({ students, schoolSettings, onPrintBatch }: BulkPr
                             <strong>{student.id}</strong>
                           </p>
                           <p>
-                            <b>Class</b>
+                            <b>Class/Trade</b>
                             <strong>{student.className}</strong>
                           </p>
                           <p>
@@ -384,14 +383,25 @@ export function BulkPrintView({ students, schoolSettings, onPrintBatch }: BulkPr
                           <b>Place of Residence</b>
                           <strong>{student.residence}</strong>
                         </div>
-                        <div className="signature">
-                          <i>{schoolSettings.headTeacherSignatureText}:</i>
-                          <span style={{ fontSize: 7, color: '#166534' }}>
-                            {schoolSettings.headTeacherName}
-                          </span>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1 }}>
+                          <i style={{ fontSize: 5.5 }}>{schoolSettings.headTeacherSignatureText}:</i>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                            <span style={{ fontFamily: 'cursive', fontSize: 7.5, color: schoolSettings.themeColor || '#1b4d34' }}>
+                              {schoolSettings.headTeacherName}
+                            </span>
+                            <img
+                              src="/Stamp/HT%20Stamp(1).png"
+                              alt="Official HT Stamp"
+                              crossOrigin="anonymous"
+                              style={{ width: 42, height: 42, objectFit: 'contain', opacity: 0.95, filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.2))', flexShrink: 0 }}
+                            />
+                          </div>
                         </div>
-                        <div style={{ textAlign: 'center' }}>
-                          <span style={{ fontSize: 5.5, color: schoolSettings.themeColor || '#1b4d34', fontWeight: 700 }}>www.gscyahafi.ac.rw</span>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+                          <span style={{ fontSize: 5, color: schoolSettings.themeColor || '#1b4d34', fontWeight: 700, letterSpacing: 0.3 }}>Visit us:</span>
+                          <span style={{ fontSize: 5.5, color: schoolSettings.themeColor || '#1b4d34', fontWeight: 800, letterSpacing: 0.2, borderBottom: `0.5px solid ${schoolSettings.themeColor || '#1b4d34'}88`, paddingBottom: 1 }}>
+                            www.gscyahafi.ac.rw
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -420,15 +430,22 @@ export function BulkPrintView({ students, schoolSettings, onPrintBatch }: BulkPr
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'space-between',
-                          padding: '6px 4px 0',
+                          padding: '6px 6px 0',
+                          borderTop: '1px solid #dde7df',
                         }}
                       >
-                        <div>
-                          <BarcodeDisplay value={student.id} width={110} height={20} showText={true} />
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
+                          <span style={{ fontSize: 5, color: '#68766d', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>Official Website</span>
+                          <span style={{ fontSize: 6, color: schoolSettings.themeColor || '#1b4d34', fontWeight: 800, letterSpacing: 0.3, borderBottom: `0.5px solid ${schoolSettings.themeColor || '#1b4d34'}88`, paddingBottom: 1 }}>
+                            www.gscyahafi.ac.rw
+                          </span>
+                          <span style={{ fontSize: 5, color: '#68766d' }}>
+                            Valid: {student.issueDate || '2025'} — {student.expiryDate || '2026'}
+                          </span>
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                          <QRCodeDisplay data={qrData} size={42} />
-                          <small style={{ fontSize: 5, color: '#68766d' }}>Verify</small>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+                          <QRCodeDisplay data={qrData} size={48} />
+                          <small style={{ fontSize: 5.5, color: '#68766d', fontWeight: 700, letterSpacing: 0.4 }}>Scan to Verify</small>
                         </div>
                       </div>
                     </div>

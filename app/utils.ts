@@ -119,7 +119,11 @@ export function generateInitials(name: string): string {
 }
 
 export function getClassTrack(className: string): string[] {
-  return className.startsWith('L') ? [...CLASS_TRACKS.L] : [...CLASS_TRACKS.S];
+  if (className.startsWith('L')) {
+    if (className.toUpperCase().includes('FBO')) return [...CLASS_TRACKS.L_FBO];
+    return [...CLASS_TRACKS.L_BDC];
+  }
+  return [...CLASS_TRACKS.S];
 }
 
 export function normalizeClassName(className: string): string {

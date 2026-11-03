@@ -6,7 +6,6 @@ import { getClassTrack, DEFAULT_SCHOOL_SETTINGS, FRONT_PHOTO_URL } from '../util
 import { Button } from '@/components/ui/button';
 import { Printer, Download, RefreshCw, Palette, Sparkles } from 'lucide-react';
 import { QRCodeDisplay } from './QRCodeDisplay';
-import { BarcodeDisplay } from './BarcodeDisplay';
 import { toPng } from 'html-to-image';
 
 interface CardPreviewProps {
@@ -331,7 +330,7 @@ function CardFront({
             <strong style={{ fontFamily: 'monospace' }}>{student.id}</strong>
           </p>
           <p>
-            <b style={{ color: themeColor }}>Class</b>
+            <b style={{ color: themeColor }}>Class/Trade</b>
             <strong>{student.className}</strong>
           </p>
           <p>
@@ -355,20 +354,54 @@ function CardFront({
 
       <div
         className="card-footer"
-        style={{ borderTop: `1.5px solid ${themeColor}33` }}
+        style={{ borderTop: `1.5px solid ${themeColor}33`, alignItems: 'center' }}
       >
+        {/* Left: Residence */}
         <div>
           <b style={{ color: themeColor, textDecoration: 'none' }}>Residence</b>
           <strong>{student.residence || 'Kigali City'}</strong>
         </div>
-        <div className="signature">
-          <i style={{ color: themeColor }}>{schoolSettings.headTeacherSignatureText || "Head Teacher's Signature"}:</i>
-          <span style={{ fontFamily: 'cursive', fontSize: 7, color: themeColor }}>
-            {schoolSettings.headTeacherName || 'M. Jean Paul'}
-          </span>
+
+        {/* Center: Signature + Stamp */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1 }}>
+          <i style={{ color: themeColor, fontSize: 5.5 }}>
+            {schoolSettings.headTeacherSignatureText || "Head Teacher's Signature"}:
+          </i>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+            <span style={{ fontFamily: 'cursive', fontSize: 7.5, color: themeColor }}>
+              {schoolSettings.headTeacherName || 'M. Jean Paul'}
+            </span>
+            <img
+              src="/Stamp/HT%20Stamp(1).png"
+              alt="Official HT Stamp"
+              crossOrigin="anonymous"
+              style={{
+                width: 42,
+                height: 42,
+                objectFit: 'contain',
+                opacity: 0.95,
+                filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.2))',
+                flexShrink: 0,
+              }}
+            />
+          </div>
         </div>
-        <div style={{ textAlign: 'center' }}>
-          <span style={{ fontSize: 5.5, color: themeColor, fontWeight: 700 }}>www.gscyahafi.ac.rw</span>
+
+        {/* Right: Website */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+          <span style={{ fontSize: 5, color: themeColor, fontWeight: 700, letterSpacing: 0.3 }}>Visit us:</span>
+          <span
+            style={{
+              fontSize: 5.5,
+              color: themeColor,
+              fontWeight: 800,
+              letterSpacing: 0.2,
+              borderBottom: `0.5px solid ${themeColor}88`,
+              paddingBottom: 1,
+            }}
+          >
+            www.gscyahafi.ac.rw
+          </span>
         </div>
       </div>
     </div>
@@ -413,19 +446,34 @@ function CardBack({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '6px 4px 0',
+          padding: '6px 6px 0',
+          borderTop: '1px solid #dde7df',
         }}
       >
-        <div style={{ textAlign: 'left' }}>
-          <BarcodeDisplay value={student.id} width={120} height={22} showText={true} />
-          <div style={{ fontSize: 5, color: '#68766d', marginTop: 2 }}>
-            Valid: {student.issueDate || '2025'} - {student.expiryDate || '2026'}
-          </div>
+        {/* Website on the left */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
+          <span style={{ fontSize: 5, color: '#68766d', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>Official Website</span>
+          <span
+            style={{
+              fontSize: 6,
+              color: schoolSettings.themeColor || '#1b4d34',
+              fontWeight: 800,
+              letterSpacing: 0.3,
+              borderBottom: `0.5px solid ${schoolSettings.themeColor || '#1b4d34'}88`,
+              paddingBottom: 1,
+            }}
+          >
+            www.gscyahafi.ac.rw
+          </span>
+          <span style={{ fontSize: 5, color: '#68766d' }}>
+            Valid: {student.issueDate || '2025'} — {student.expiryDate || '2026'}
+          </span>
         </div>
 
+        {/* QR code on the right */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-          <QRCodeDisplay data={qrData} size={46} />
-          <span style={{ fontSize: 5, color: '#758279', fontWeight: 600 }}>Scan to Verify</span>
+          <QRCodeDisplay data={qrData} size={48} />
+          <span style={{ fontSize: 5.5, color: '#758279', fontWeight: 700, letterSpacing: 0.4 }}>Scan to Verify</span>
         </div>
       </div>
     </div>
